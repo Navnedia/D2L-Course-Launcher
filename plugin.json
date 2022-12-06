@@ -1,0 +1,12 @@
+{
+    "ID": "530F4B2599F4417C8463C2E7D334355A",
+    "ActionKeyword": "bl",
+    "Name": "Bookmark-Launcher",
+    "Description": "Quickly launch specified links in the browser",
+    "Author": "Navnedia",
+    "Version": "0.1.0",
+    "Language": "python",
+    "Website": "https://github.com/Navnedia/Bookmark-Launcher",
+    "IcoPath": "assets\\icon.png",
+    "ExecuteFileName": "main.py"
+  }
