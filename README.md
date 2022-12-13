@@ -12,9 +12,18 @@ Because D2L is slightly diffrent for each school, and because it has no way for 
 
 
 # Instructions
-First, you will need to create a configuration file called **`Configuration.json`** in the folder:
+First you will need to manually install the plugin. Download the D2L-Course-Launcher.zip file from the **[latest released version page](https://github.com/Navnedia/D2L-Course-Launcher/releases)**.
 
-```C:/Users/%USERPROFILE%/AppData/Roaming/FlowLauncher/Settings/Plugins/D2L Course Launcher```
+Now unzip the file and put it's contents into a folder called `D2L Course Launcher`, or if it's already in a folder when you unzip it then just use that. Put that folder here:
+
+`C:/Users/%USERPROFILE%/AppData/Roaming/FlowLauncher/Plugins/`
+
+Then open the flow lancher search bar with `Alt+Space` search `restart Flow Launcher` and press enter to run.
+
+## **Configuration**
+Now that we have the plugin installed,we will need to create a configuration file called **`Configuration.json`** in the folder:
+
+`C:/Users/%USERPROFILE%/AppData/Roaming/FlowLauncher/Settings/Plugins/D2L Course Launcher`
 
 In this file you will be configuring some data about the classes you want to show in flow launcher. 
 
