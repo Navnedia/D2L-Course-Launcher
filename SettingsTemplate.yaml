@@ -1,0 +1,4 @@
+body:
+  - type: textBlock
+    attributes:
+      description: Please visit the plugin website for set up details :)
