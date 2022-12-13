@@ -49,7 +49,7 @@ You will need to find the ID for each of the courses you want in your launcher. 
 
 ## Sample Configuration
 
-[![Example Configuration](assets/config.png)](https://github.com/Navnedia/D2L-Course-Launcher/blob/main/Blank-Configuration.json)
+![Example Configuration](assets/config.png)
 
 ## Configuration Parameters
 |   Parameter  |     Type     | Description                          |
