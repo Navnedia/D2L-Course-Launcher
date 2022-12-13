@@ -20,7 +20,7 @@ Now unzip the file and put it's contents into a folder called `D2L Course Launch
 
 Then open the flow lancher search bar with `Alt+Space` search `restart Flow Launcher` and press enter to run.
 
-## **Configuration**
+## Configuration
 Now that we have the plugin installed,we will need to create a configuration file called **`Configuration.json`** in the folder:
 
 `C:/Users/%USERPROFILE%/AppData/Roaming/FlowLauncher/Settings/Plugins/D2L Course Launcher`
@@ -47,11 +47,11 @@ You will need to find the ID for each of the courses you want in your launcher. 
 > **Note**
 > Now it's up to you to decide if and how you want to fill out the rest of the fields. Check out the example configuration below, and the detailed parameter description chart.
 
-## **Sample Configuration**
+## Sample Configuration
 
 [![Example Configuration](assets/config.png)](https://github.com/Navnedia/D2L-Course-Launcher/blob/main/Blank-Configuration.json)
 
-## **Configuration Parameters**
+## Configuration Parameters
 |   Parameter  |     Type     | Description                          |
 |:------------:|:------------:|:-------------------------------------|
 | domain       |   Required   | Your schools D2L domain: `https://d2l.example-school.com` It won't look exactly like that. Just look at the url while on D2L **(See image below)**. |
