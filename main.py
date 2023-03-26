@@ -70,8 +70,10 @@ class CourseLauncher(Flox):
 
         # Loop through add ad all the courses:
         for course in self.courses:
-            id = course.get('id', None)
-            if not id:  # Ignore entry if there is no id.
+            id = course.get('id')
+            name = course.get('name', '')
+            # Ignore entries with no id and filter out courses that don't contain the query string:
+            if (not id) or (query.lower() not in name.lower()):
                 continue
 
             # Get the users page option, or default to the home page if not set:
@@ -90,12 +92,12 @@ class CourseLauncher(Flox):
 
             # Add course entry to results:
             self.add_item(
-                title=course.get('name', f'Course {id}') or f'Course {id}',
+                title=name or f'Course {id}',
                 subtitle=f'Open {page_title}',
                 icon=utils.get_icon(course.get('icon', ''), Path(self.custom_icons_folder)),  # Get the icon path & download if needed.
                 method=self.browser_open,
                 parameters=[uri],
-                context=[id, course.get('name', f'Course {id}'), custom_pages]
+                context=[id, name or f'Course {id}', custom_pages]
             )
 
     def context_menu(self, data):
