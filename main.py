@@ -66,6 +66,7 @@ class CourseLauncher(Flox):
         if query.lower() == 'config':
             self.show_config()
             return
+        
 
         # Loop through add ad all the courses:
         for course in self.courses:
@@ -74,31 +75,59 @@ class CourseLauncher(Flox):
                 continue
 
             # Get the users page option, or default to the home page if not set:
-            page_name = course.get('default_page', '').strip().title() or 'Course Home'
-            page_path = D2L_PAGES.get(page_name, HOME_PAGE)
+            page_title = course.get('default_page', '').strip().title() or 'Course Home'
+
+            # Figure out the correct uri for the selected default page:
+            # First, check for the default page title in the custom pages.
+            custom_pages = course.get('custom_pages', {})
+            uri = custom_pages.get(page_title, {}).get('uri')
+            if not uri:  
+                # If the default page isn't found in the custom list, then check the known d2l pages.
+                d2l_path = D2L_PAGES.get(page_title, HOME_PAGE)
+                if d2l_path == HOME_PAGE:  # Not found: update the title when defaulted to the home page.
+                    page_title = 'Course Home'
+                uri = self.domain + d2l_path.format(id)  # Combine the d2l domain and the page path.
+
             # Add course entry to results:
             self.add_item(
                 title=course.get('name', f'Course {id}') or f'Course {id}',
-                subtitle=f'Open D2L {page_name}',
+                subtitle=f'Open {page_title}',
                 icon=utils.get_icon(course.get('icon', ''), Path(self.custom_icons_folder)),  # Get the icon path & download if needed.
                 method=self.browser_open,
-                parameters=[self.domain + page_path.format(id)],
-                context=[id, course.get('name', f'Course {id}')]
+                parameters=[uri],
+                context=[id, course.get('name', f'Course {id}'), custom_pages]
             )
 
     def context_menu(self, data):
         """Generate context menu options for a given course."""
-        id, course_name = data
+        if not data:
+            return
+
+        id, course_name, custom_pages = data
         # Add a sub-item for each D2L page:
-        for page_name, page_path in D2L_PAGES.items():
+        for page_title, page_path in D2L_PAGES.items():
             self.add_item(
-                title=page_name,
+                title=page_title,
                 subtitle=course_name,
-                icon=PAGE_ICONS.get(page_name, ''),
+                icon=PAGE_ICONS.get(page_title, ''),
                 method=self.browser_open,
                 parameters=[self.domain + page_path.format(id)]
             )
 
+        # Add a sub-item for each custom page:
+        for page_title, attributes in custom_pages.items():
+            uri = attributes.get('uri')
+            if not uri:  # Ignore entries with no uri to open.
+                continue;
+
+            self.add_item(
+                title=page_title,
+                subtitle=course_name,
+                icon=utils.get_icon(attributes.get('icon', ''), Path(self.custom_icons_folder)),   # Get the icon path & download if needed.
+                method=self.browser_open,
+                parameters=[uri]
+            )
+    
     def show_error(self, msg: str='Something went wrong!'):
         """Helper to create an error message item."""
         self.add_item(
