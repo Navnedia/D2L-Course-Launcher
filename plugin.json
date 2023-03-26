@@ -4,9 +4,9 @@
     "Name": "D2L Course Launcher",
     "Description": "Quickly launch your course pages in the browser",
     "Author": "Navnedia",
-    "Version": "0.1.0",
+    "Version": "0.2.0",
     "Language": "python",
     "Website": "https://github.com/Navnedia/D2L-Course-Launcher",
-    "IcoPath": "assets\\icon.png",
+    "IcoPath": "assets/icon.png",
     "ExecuteFileName": "main.py"
   }
