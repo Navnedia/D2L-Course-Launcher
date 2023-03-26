@@ -97,7 +97,7 @@ class CourseLauncher(Flox):
                 icon=utils.get_icon(course.get('icon', ''), Path(self.custom_icons_folder)),  # Get the icon path & download if needed.
                 method=self.browser_open,
                 parameters=[uri],
-                context=[id, name or f'Course {id}', custom_pages]
+                context=[id, name or f'Course {id}', custom_pages, course.get('ignore', [])]  # Pass data used for context menu.
             )
 
     def context_menu(self, data):
@@ -105,9 +105,14 @@ class CourseLauncher(Flox):
         if not data:
             return
 
-        id, course_name, custom_pages = data
+        id, course_name, custom_pages, ignore = data
+        ignore = [title.lower() for title in ignore]
+
         # Add a sub-item for each D2L page:
         for page_title, page_path in D2L_PAGES.items():
+            if page_title.lower() in ignore:  # Skip D2L pages that are tagged ignore.
+                continue
+
             self.add_item(
                 title=page_title.title(),
                 subtitle=course_name,
@@ -119,7 +124,8 @@ class CourseLauncher(Flox):
         # Add a sub-item for each custom page:
         for page_title, attributes in custom_pages.items():
             uri = attributes.get('uri')
-            if not uri:  # Ignore entries with no uri to open.
+            # Ignore entries with no uri to open and skip custom pages that are tagged ignore.
+            if (not uri) or (page_title.lower() in ignore):
                 continue;
 
             self.add_item(
