@@ -1,12 +1,15 @@
 import json
 import sys,os
+# Load libraries from lib:
 parent_folder_path = os.path.abspath(os.path.dirname(__file__))
 sys.path.append(parent_folder_path)
 sys.path.append(os.path.join(parent_folder_path, 'lib'))
 sys.path.append(os.path.join(parent_folder_path, 'plugin'))
 
+
 from flox import Flox, utils
 from pathlib import Path
+from shutil import copyfile
 from functools import cached_property
 
 HOME_PAGE = '/d2l/home/{}'
@@ -21,6 +24,7 @@ D2L_PAGES = {
 }
 
 ERROR_ICON = 'assets/error.png'
+SETTINGS_ICON = 'assets/settings.png'
 PAGE_ICONS = {
     'Course Home': 'assets/home.png',
     'Content Tab': 'assets/content.png',
@@ -44,18 +48,26 @@ class CourseLauncher(Flox):
         # Check that configuration file exists.
         if not os.path.exists(self.config_file): 
             self.show_error(msg='Please set up the configuration file!')
-            #? It might be cool to generate the file here if it doesn't exist.
+            self.show_config()
             return
         # If the config has been modified since last time, then reload the data.
         if self.modify_time != os.path.getmtime(self.config_file):
             self.reload_data()
         if not self.domain: # Make sure we have a domain.
             self.show_error(msg='Please add the domain in your configuration file!')
+            self.show_config()
             return
         if not self.courses: # Make sure we have courses.
             self.show_error(msg='Please add courses to your configuration file!')
+            self.show_config()
+            return
+        
+        # Quick launch config command:
+        if query.lower() == 'config':
+            self.show_config()
             return
 
+        # Loop through add ad all the courses:
         for course in self.courses:
             id = course.get('id', None)
             if not id:  # Ignore entry if there is no id.
@@ -96,6 +108,20 @@ class CourseLauncher(Flox):
             method=self.browser_open,
             parameters=[self.manifest['Website']]
         )
+
+    def show_config(self):
+        """Add show config file prompt."""
+        self.add_item(
+            title='Create/Open Configuration File',
+            icon=SETTINGS_ICON,
+            method=self.open_config
+        )
+
+    def open_config(self):
+        """Open the configuration file in default editor."""
+        if not os.path.exists(self.config_file):  # Create file from the template if it doesn't exist. 
+            copyfile('blank-config.json', self.config_file)
+        self.browser_open(self.config_file)  # Open file.
 
     @cached_property
     def config_file(self):
