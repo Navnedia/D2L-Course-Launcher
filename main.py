@@ -17,19 +17,19 @@ CONTENT_PAGE = '/d2l/le/content/{}/home'
 DISCUSSIONS_PAGE = '/d2l/le/{}/discussions/List'
 SUBMISSIONS_PAGE = '/d2l/lms/dropbox/user/folders_list.d2l?ou={}'
 D2L_PAGES = {
-    'Course Home': HOME_PAGE,
-    'Content Tab': CONTENT_PAGE,
-    'Discussions Tab': DISCUSSIONS_PAGE,
-    'Submissions Tab': SUBMISSIONS_PAGE
+    'course home': HOME_PAGE,
+    'content tab': CONTENT_PAGE,
+    'discussions tab': DISCUSSIONS_PAGE,
+    'submissions tab': SUBMISSIONS_PAGE
 }
 
 ERROR_ICON = 'assets/error.png'
 SETTINGS_ICON = 'assets/settings.png'
 PAGE_ICONS = {
-    'Course Home': 'assets/home.png',
-    'Content Tab': 'assets/content.png',
-    'Discussions Tab': 'assets/discussions.png',
-    'Submissions Tab': 'assets/submissions.png'
+    'course home': 'assets/home.png',
+    'content tab': 'assets/content.png',
+    'discussions tab': 'assets/discussions.png',
+    'submissions tab': 'assets/submissions.png'
 }
 
 
@@ -77,7 +77,7 @@ class CourseLauncher(Flox):
                 continue
 
             # Get the users page option, or default to the home page if not set:
-            page_title = course.get('default_page', '').strip().title() or 'Course Home'
+            page_title = course.get('default_page', '').strip() or 'course home'
 
             # Figure out the correct uri for the selected default page:
             # First, check for the default page title in the custom pages.
@@ -85,15 +85,15 @@ class CourseLauncher(Flox):
             uri = custom_pages.get(page_title, {}).get('uri')
             if not uri:  
                 # If the default page isn't found in the custom list, then check the known d2l pages.
-                d2l_path = D2L_PAGES.get(page_title, HOME_PAGE)
+                d2l_path = D2L_PAGES.get(page_title.lower(), HOME_PAGE)
                 if d2l_path == HOME_PAGE:  # Not found: update the title when defaulted to the home page.
-                    page_title = 'Course Home'
+                    page_title = 'course home'
                 uri = self.domain + d2l_path.format(id)  # Combine the d2l domain and the page path.
 
             # Add course entry to results:
             self.add_item(
                 title=name or f'Course {id}',
-                subtitle=f'Open {page_title}',
+                subtitle=f'Open {page_title.title()}',
                 icon=utils.get_icon(course.get('icon', ''), Path(self.custom_icons_folder)),  # Get the icon path & download if needed.
                 method=self.browser_open,
                 parameters=[uri],
@@ -109,9 +109,9 @@ class CourseLauncher(Flox):
         # Add a sub-item for each D2L page:
         for page_title, page_path in D2L_PAGES.items():
             self.add_item(
-                title=page_title,
+                title=page_title.title(),
                 subtitle=course_name,
-                icon=PAGE_ICONS.get(page_title, ''),
+                icon=PAGE_ICONS.get(page_title.lower(), ''),
                 method=self.browser_open,
                 parameters=[self.domain + page_path.format(id)]
             )
@@ -123,7 +123,7 @@ class CourseLauncher(Flox):
                 continue;
 
             self.add_item(
-                title=page_title,
+                title=page_title.title(),
                 subtitle=course_name,
                 icon=utils.get_icon(attributes.get('icon', ''), Path(self.custom_icons_folder)),   # Get the icon path & download if needed.
                 method=self.browser_open,
