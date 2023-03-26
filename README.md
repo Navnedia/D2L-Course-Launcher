@@ -42,6 +42,7 @@ After you have the domain, input this into your **`Configuration.json`** file un
 Open the D2L course in your browser like normal, then look in the url for something that looks like an id. This will most likely be a series of numbers.
 
 You will need to find the ID for each of the courses you want in your launcher. When you have the IDs, you can put them in the id fields of your **`Configuration.json`** file.
+
 ![Find Course IDs Image](assets/id.png)
 
 > **Note**
@@ -64,7 +65,7 @@ You will need to find the ID for each of the courses you want in your launcher. 
 | id           |   Required   | Course id can be found in the url when you have the course open on D2L. Likely a series of numbers. |
 | name         |  Recommended | This is whatever custom name you want to display for this course. Default is the course id. |
 | icon         |   Optional   | The icon for the course menu option. This can be a local `file path`, or an `online image url`. **MAKE SURE TO USE FORWARD SLASHES FOR FILE PATHS!!** |
-| default_page |   Optional   | Page that opens when the course is clicked. **(Options: `course home`, `content tab`, `discussions tab`, `submissions tab`)** Default is course home. |
+| default_page |   Optional   | **(Options: `course home`, `content tab`, `discussions tab`, `submissions tab`)** Page that opens when the course is clicked. Default is course home. |
 
 
 ## Using the Plugin
