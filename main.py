@@ -124,7 +124,7 @@ class CourseLauncher(Flox):
         # Add a sub-item for each custom page:
         for page_title, attributes in custom_pages.items():
             uri = attributes.get('uri')
-            # Ignore entries with no uri to open and skip custom pages that are tagged ignore.
+            # Ignore entries with no uri, and skip custom pages that are tagged ignore.
             if (not uri) or (page_title.lower() in ignore):
                 continue;
 
