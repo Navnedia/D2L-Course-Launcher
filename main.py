@@ -48,23 +48,23 @@ class CourseLauncher(Flox):
         # Check that configuration file exists.
         if not os.path.exists(self.config_file): 
             self.show_error(msg='Please set up the configuration file!')
-            self.show_config()
+            self.open_config()
             return
         # If the config has been modified since last time, then reload the data.
         if self.modify_time != os.path.getmtime(self.config_file):
             self.reload_data()
         if not self.domain: # Make sure we have a domain.
             self.show_error(msg='Please add the domain in your configuration file!')
-            self.show_config()
+            self.open_config()
             return
         if not self.courses: # Make sure we have courses.
             self.show_error(msg='Please add courses to your configuration file!')
-            self.show_config()
+            self.open_config()
             return
         
         # Quick launch config command:
         if query.lower() == 'config':
-            self.show_config()
+            self.open_config()
             return
         
 
@@ -94,8 +94,8 @@ class CourseLauncher(Flox):
             self.add_item(
                 title=name or f'Course {id}',
                 subtitle=f'Open {page_title.title()}',
-                icon=utils.get_icon(course.get('icon', ''), Path(self.custom_icons_folder)),  # Get the icon path & download if needed.
-                method=self.browser_open,
+                IcoPath=course.get('icon') or self.icon, # Get the icon path & download if needed (or plugin icon as default).
+                method="Flow.Launcher.OpenAppUri",
                 parameters=[uri],
                 context=[id, name or f'Course {id}', custom_pages, course.get('ignore', [])]  # Pass data used for context menu.
             )
@@ -116,8 +116,8 @@ class CourseLauncher(Flox):
             self.add_item(
                 title=page_title.title(),
                 subtitle=course_name,
-                icon=PAGE_ICONS.get(page_title.lower(), ''),
-                method=self.browser_open,
+                IcoPath=PAGE_ICONS.get(page_title.lower()) or self.icon,
+                method="Flow.Launcher.OpenAppUri",
                 parameters=[self.domain + page_path.format(id)]
             )
 
@@ -131,8 +131,8 @@ class CourseLauncher(Flox):
             self.add_item(
                 title=page_title.title(),
                 subtitle=course_name,
-                icon=utils.get_icon(attributes.get('icon', ''), Path(self.custom_icons_folder)),   # Get the icon path & download if needed.
-                method=self.browser_open,
+                IcoPath=attributes.get('icon') or self.icon,
+                method="Flow.Launcher.OpenAppUri",
                 parameters=[uri]
             )
     
@@ -141,24 +141,22 @@ class CourseLauncher(Flox):
         self.add_item(
             title=msg,
             subtitle='Click here to view instructions on GitHub',
-            icon=ERROR_ICON,
-            method=self.browser_open,
+            IcoPath=ERROR_ICON,
+            method="Flow.Launcher.OpenAppUri",
             parameters=[self.manifest['Website']]
         )
 
-    def show_config(self):
-        """Add show config file prompt."""
-        self.add_item(
-            title='Create/Open Configuration File',
-            icon=SETTINGS_ICON,
-            method=self.open_config
-        )
-
     def open_config(self):
-        """Open the configuration file in default editor."""
+        """Show result to open the configuration file in default editor."""
         if not os.path.exists(self.config_file):  # Create file from the template if it doesn't exist. 
             copyfile('blank-config.json', self.config_file)
-        self.browser_open(self.config_file)  # Open file.
+
+        self.add_item(
+            title='Create/Open Configuration File',
+            IcoPath=SETTINGS_ICON,
+            method="Flow.Launcher.OpenAppUri",
+            parameters=[self.config_file]
+        )
 
     @cached_property
     def config_file(self):
@@ -178,12 +176,6 @@ class CourseLauncher(Flox):
             data = json.load(fp)
             self.domain = data.get('domain', '').strip(' /')  # Strip spaces and backslashes so it's in the correct format.
             self.courses = data.get('courses', [])
-
-    @cached_property
-    def custom_icons_folder(self):
-        """Get folder path for automatically downloaded custom icons."""
-        dirname = self.name
-        return os.path.join(self.appdata, 'Settings', 'Plugins', dirname, 'Custom-Icons')
 
 
 if __name__ == "__main__":
